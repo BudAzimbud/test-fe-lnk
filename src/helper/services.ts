@@ -1,5 +1,11 @@
+import { ILogin } from "../constant/auth.constant";
 import { IFormEmail, IResponseListSendEmail } from "../constant/email.constant";
 import { api } from "./api";
+
+export const login = (data: ILogin) => {
+  return api.post('login', data)
+}
+
 export const listEmailSend = () => {
   return api.get<IResponseListSendEmail>("send-email");
 };
