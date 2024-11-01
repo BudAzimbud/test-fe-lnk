@@ -11,7 +11,7 @@ import {
 import React from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import { IFormEmail } from "../constant/email.constant";
-import { createEmailSend, deleteEmailSend } from "../helper/services";
+import { createEmailSend, deleteEmailSend, editEmailSend } from "../helper/services";
 import { Close } from "@mui/icons-material";
 
 type PropsFormModal = {
@@ -41,47 +41,26 @@ function FormModal({ open, onClose }: PropsFormModal) {
   const isEdit = watch("id");
 
   const [snakBarDelete, setSnackBarDelete] = React.useState(false);
-  const [undoDelete, setUndoDelete] = React.useState(false)
   const handleDelete = () => {
-    deleteEmailSend(watch("id"));
-    setSnackBarDelete(true);
-    setTimeout(() => {
-      if(!undoDelete){
-       
-        setUndoDelete(true);
-        onClose();
-      }
-    }, 6000)
-  }
-  const action = (
-    <React.Fragment>
-      <Button
-        color="secondary"
-        size="small"
-        onClick={() => {
-          setUndoDelete(true);
-        }}
-      >
-        UNDO
-      </Button>
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={() => {
-          setSnackBarDelete(false);
-        }}
-      >
-        <Close fontSize="small" />
-      </IconButton>
-    </React.Fragment>
-  );
+    deleteEmailSend(watch("id")).then((res) => {
+      setSnackBarDelete(true);
+      onClose();
+    });
+  };
 
   const onSubmit = (data: IFormEmail) => {
-    createEmailSend(data).then((res) => {
-      onClose();
-      setSnackbarOpen(true);
-    });
+    if(data.id){
+      editEmailSend(data).then((res) => {
+        onClose();
+        setSnackbarOpen(true);
+      });
+    }else{
+      createEmailSend(data).then((res) => {
+        onClose();
+        setSnackbarOpen(true);
+      });
+    }
+
   };
   return (
     <>
@@ -151,6 +130,11 @@ function FormModal({ open, onClose }: PropsFormModal) {
                 <Button variant="outlined" onClick={onClose}>
                   Cancel
                 </Button>
+                {watch("id") && (
+                  <Button onClick={handleDelete} variant="outlined" color="error">
+                    Delete
+                  </Button>
+                )}
                 <Button type="submit" variant="contained" color="primary">
                   Save
                 </Button>
@@ -174,7 +158,6 @@ function FormModal({ open, onClose }: PropsFormModal) {
         autoHideDuration={6000}
         onClose={() => setSnackBarDelete(false)}
         message="Already deleted"
-        action={action}
       />
     </>
   );

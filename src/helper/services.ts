@@ -15,7 +15,8 @@ export const createEmailSend = (data:IFormEmail) => {
 }
 
 export const editEmailSend = (data:IFormEmail) => {
-  return api.put(`send-email/${data.id}`, data);
+  data.date = new Date(data.date).toISOString();
+  return api.patch(`send-email/${data.id}`,  {...data, sendDate: data.date});
 }
 
 export const deleteEmailSend = (id: number) => {
