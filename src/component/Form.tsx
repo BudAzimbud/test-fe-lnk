@@ -2,17 +2,14 @@ import {
   Box,
   Button,
   Grid,
-  IconButton,
   Modal,
-  Paper,
   Snackbar,
   TextField,
 } from "@mui/material";
 import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { IFormEmail } from "../constant/email.constant";
 import { createEmailSend, deleteEmailSend, editEmailSend } from "../helper/services";
-import { Close } from "@mui/icons-material";
 
 type PropsFormModal = {
   open: boolean;

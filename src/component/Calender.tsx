@@ -85,7 +85,6 @@ const EmailCalendar: React.FC = () => {
      */
     window.clearTimeout(clickRef?.current);
     clickRef.current = window.setTimeout(() => {
-      console.log(slotInfo.slots[0]);
       setOpen(true)
       reset({
         email: "",

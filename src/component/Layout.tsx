@@ -44,6 +44,12 @@ function Layout(props: Props) {
     setAnchorElUser(null);
   };
 
+  React.useEffect(() => {
+    if(!localStorage.getItem('token')){
+      navigate('/login')
+    }
+  } ,[navigate])
+
   return (
     <>
       <AppBar position="static">
@@ -157,6 +163,7 @@ function Layout(props: Props) {
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={() => {
                     navigate('/login')
+                    localStorage.removeItem('token')
                   }}>
                     <Typography sx={{ textAlign: "center" }}>
                       {setting}

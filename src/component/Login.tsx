@@ -8,34 +8,33 @@ import { login } from "../helper/services";
 
 export default function CredentialsSignInPage() {
   const theme = useTheme();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<boolean>(false); // Use string for specific error messages
+  const [success, setSuccess] = useState(false); // New state for success message
   const navigate = useNavigate();
+
   const signIn: (provider: AuthProvider, formData: FormData) => void = async (
     provider,
     formData
   ) => {
-    const promise = new Promise<void>((resolve) => {
-      login({
-        email: `${formData.get("email")}`,
-        password: `${formData.get("password")}`,
-      })
-        .then((res) => {
-          navigate("/login");
-          localStorage.setItem("token", res.data.data.token);
-        })
-        .catch((err) => {
-          setError(true);
-        })
-        .finally(() => {
-          resolve();
-        });
-    });
-    return promise;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      const res = await login({ email, password });
+      localStorage.setItem("token", res.data.data.access_token);
+      setSuccess(true);
+      setError(false);
+      navigate("/"); 
+    } catch (err) {
+      setError(true);
+      setSuccess(false);
+    }
   };
 
   return (
     <AppProvider theme={theme}>
-      {error && <Alert color="error">Your account not valid</Alert>}
+      {error && <Alert severity="error">{error}</Alert>}
+      {success && <Alert severity="success">Login successful! Redirecting...</Alert>}
       <SignInPage
         signIn={signIn}
         providers={[
